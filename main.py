@@ -1,7 +1,9 @@
 import cv2
-
+from tkinter.filedialog import *
 temp=0
-img=cv2.imread('test.png', 1)
+pic_path = askopenfilename(title="选择图片")
+# 取得文件路径
+img=cv2.imread(pic_path, 1)
 ##马赛克
 def do_mosaic(frame, x, y, w, h, neighbor=9):
     """
@@ -54,7 +56,7 @@ while True:
     cv2.setMouseCallback('img', on_mouse)
     # cv2.startWindowThread()  # 加在这个位置
     cv2.imshow('img', img)
-    key = cv2.waitKey(0)
+    key = cv2.waitKey(0)#监听！！！
     if key ==27: # 按esc退出
         break
     if key == 8:
