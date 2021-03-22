@@ -5,27 +5,14 @@ pic_path = askopenfilename(title="选择图片")
 # 取得文件路径
 img=cv2.imread(pic_path, 1)
 ##马赛克
-def do_mosaic(frame, x, y, w, h, neighbor=9):
-    """
-    马赛克的实现原理是把图像上某个像素点一定范围邻域内的所有点用邻域内左上像素点的颜色代替，这样可以模糊细节，但是可以保留大体的轮廓。
-    :param frame: opencv frame
-    :param int x :  马赛克左顶点
-    :param int y:  马赛克右顶点
-    :param int w:  马赛克宽
-    :param int h:  马赛克高
-    :param int neighbor:  马赛克每一块的宽
-    """
-    fh, fw = frame.shape[0], frame.shape[1]
-    if (y + h > fh) or (x + w > fw):
-        return
-    for i in range(0, h - neighbor, neighbor):  # 关键点0 减去neightbour 防止溢出
-        for j in range(0, w - neighbor, neighbor):
-            color = frame[i + y][j + x].tolist()  # 关键点1 tolist
-            left_up = (j+x, i+y)
-            right_down = (j+x + neighbor - 1, i+y + neighbor - 1)  # 关键点2 减去一个像素
-            cv2.rectangle(frame, left_up, right_down, color, -1)
-            #把一大块的颜色都指定成color--也就是我们之前取的左上角的颜色
-    return frame
+def do_mosaic(img,x,y,w,h,neighbor=20):  # neighbor is the masaic degree
+    img_height = img.shape[0]
+    img_width = img.shape[1]
+    for i in range(x,x+w,neighbor):
+        for j in range(y,y+h,neighbor):
+            color=img[j+1][i+1].tolist() #image matrix [height][widith]
+            cv2.rectangle(img,(i,j),(i+neighbor,j+neighbor),color,-1)
+    return img
 
 def on_mouse(event, x, y, flags, param):
     global img,point1, point2, g_rect
